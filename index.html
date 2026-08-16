@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aditya — Developer & Creator</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@600&display=swap');
 
   :root{
     --bg:#f4f1ea;
@@ -15,6 +15,10 @@
     --violet-dark:#4b2fd6;
     --card:#ffffff;
     --line:#e4dfd2;
+    --pink:#ff8fb3;
+    --orange:#ffb26b;
+    --mint:#7fe0c4;
+    --blue:#7fb8ff;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -36,60 +40,97 @@
   nav .logo{ font-weight:800; font-size:16px; letter-spacing:-0.02em; }
   nav .links{ display:flex; gap:28px; font-size:13px; text-transform:uppercase; letter-spacing:0.08em; }
 
+  /* ---------- POLAROID TILE ---------- */
+  .polaroid{
+    position:absolute;
+    background:#fff;
+    padding:10px 10px 34px;
+    border-radius:6px;
+    box-shadow:0 14px 34px rgba(0,0,0,.14);
+    width:150px;
+    opacity:0;
+    transform:translateY(24px) rotate(var(--r,0deg));
+    animation:popIn .7s cubic-bezier(.2,1,.3,1) forwards;
+  }
+  .polaroid .art{
+    width:100%; aspect-ratio:1/1;
+    border-radius:2px;
+    background:var(--g);
+  }
+  .polaroid .cap{
+    position:absolute; bottom:8px; left:12px; right:12px;
+    font-family:'Caveat', cursive;
+    font-size:16px; color:#333;
+  }
+  @keyframes popIn{ to{ opacity:1; transform:translateY(0) rotate(var(--r,0deg)); } }
+
+  .sticker{
+    position:absolute;
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:9px 15px;
+    border-radius:100px;
+    font-size:12px;
+    box-shadow:0 8px 22px rgba(0,0,0,.08);
+    opacity:0;
+    transform:translateY(20px) rotate(var(--r,0deg));
+    animation:popIn .7s ease forwards;
+  }
+
   /* ---------- HERO ---------- */
   .hero{
     min-height:100vh;
+    position:relative;
     display:flex; flex-direction:column; justify-content:center;
     padding:0 6vw;
-    position:relative;
+    overflow:hidden;
   }
   .hero .eyebrow{
     font-family:'JetBrains Mono', monospace;
     font-size:13px; color:var(--violet-dark);
     letter-spacing:0.1em; text-transform:uppercase;
     margin-bottom:18px;
+    position:relative; z-index:5;
   }
   .hero h1{
-    font-size:clamp(38px,7.5vw,96px);
+    font-size:clamp(38px,7.2vw,92px);
     font-weight:800;
     line-height:1.02;
     letter-spacing:-0.03em;
-    max-width:14ch;
+    max-width:15ch;
+    position:relative; z-index:5;
   }
   .hero .sub{
     margin-top:26px;
     font-size:clamp(15px,1.6vw,19px);
     color:var(--dim);
-    max-width:44ch;
+    max-width:42ch;
     line-height:1.6;
+    position:relative; z-index:5;
   }
   .hero .loc{
-    margin-top:40px;
+    margin-top:36px;
     font-family:'JetBrains Mono', monospace;
     font-size:12px; color:var(--dim); text-transform:uppercase; letter-spacing:0.08em;
+    position:relative; z-index:5;
   }
-  .float-tag{
-    position:absolute;
-    background:var(--card);
-    border:1px solid var(--line);
-    padding:10px 16px;
-    border-radius:100px;
-    font-size:12px;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    opacity:0;
-    transform:translateY(20px) rotate(var(--r,0deg));
-    animation:floatIn 0.8s ease forwards;
-  }
-  @keyframes floatIn{ to{ opacity:1; transform:translateY(0) rotate(var(--r,0deg)); } }
-  .ft1{ top:14%; right:8vw; --r:-6deg; animation-delay:.3s; }
-  .ft2{ top:60%; right:4vw; --r:4deg; animation-delay:.6s; }
-  .ft3{ top:78%; left:8vw; --r:-3deg; animation-delay:.9s; }
 
-  /* ---------- REVEAL ON SCROLL ---------- */
+  /* scattered hero elements — desktop positions, hidden on small screens */
+  .p1{ top:10%; right:16vw; --r:-8deg; --g:linear-gradient(135deg,var(--violet),var(--blue)); animation-delay:.3s; }
+  .p2{ top:6%; right:2vw; --r:6deg; --g:linear-gradient(135deg,var(--pink),var(--orange)); animation-delay:.5s; width:120px;}
+  .p3{ top:58%; right:6vw; --r:-4deg; --g:linear-gradient(135deg,var(--mint),var(--blue)); animation-delay:.7s; }
+  .p4{ top:72%; right:22vw; --r:5deg; --g:linear-gradient(135deg,var(--orange),var(--pink)); animation-delay:.9s; width:110px;}
+  .s1{ top:36%; right:8vw; --r:-5deg; animation-delay:.6s; }
+  .s2{ top:88%; right:14vw; --r:3deg; animation-delay:1s; }
+  @media (max-width:900px){
+    .polaroid, .sticker{ display:none; }
+  }
+
+  /* ---------- REVEAL ---------- */
   .reveal{ opacity:0; transform:translateY(40px); transition:opacity .7s ease, transform .7s ease; }
   .reveal.in{ opacity:1; transform:translateY(0); }
 
-  section{ padding:120px 6vw; }
+  section{ padding:110px 6vw; position:relative; }
   .section-label{
     font-family:'JetBrains Mono', monospace;
     font-size:12px; color:var(--violet-dark); text-transform:uppercase; letter-spacing:0.1em;
@@ -101,28 +142,43 @@
     max-width:16ch;
   }
 
-  /* ---------- FACT TILES ---------- */
-  .facts{ display:flex; flex-wrap:wrap; gap:16px; margin-top:50px; }
-  .fact{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:18px;
-    padding:22px 20px;
-    width:150px; height:150px;
-    display:flex; flex-direction:column; justify-content:space-between;
-    box-shadow:0 6px 20px rgba(0,0,0,.04);
+  /* ---------- MOSAIC GALLERY (about) ---------- */
+  .mosaic{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    grid-auto-rows:90px;
+    gap:14px;
+    margin-top:50px;
+  }
+  .mtile{
+    border-radius:16px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:16px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
     transition:transform .3s ease;
   }
-  .fact:hover{ transform:translateY(-6px) rotate(-2deg); }
-  .fact .emoji{ font-size:28px; }
-  .fact .txt{ font-size:12.5px; color:var(--dim); line-height:1.4; }
+  .mtile:hover{ transform:scale(1.02) rotate(-1deg); }
+  .mtile .txt{ font-size:13px; font-weight:600; line-height:1.4; position:relative; z-index:2; }
+  .mtile::after{ content:''; position:absolute; inset:0; background:rgba(0,0,0,.15); }
+  .m1{ grid-column:span 2; grid-row:span 3; background:linear-gradient(160deg,var(--violet),#3a2a9e); }
+  .m2{ grid-column:span 2; grid-row:span 2; background:linear-gradient(160deg,var(--pink),#e0567f); }
+  .m3{ grid-column:span 2; grid-row:span 2; background:linear-gradient(160deg,var(--mint),#2fa683); }
+  .m4{ grid-column:span 2; grid-row:span 2; background:linear-gradient(160deg,var(--orange),#e08a3e); }
+  .m5{ grid-column:span 2; grid-row:span 2; background:linear-gradient(160deg,var(--blue),#3a7fdb); }
+  .m6{ grid-column:span 2; grid-row:span 1; background:linear-gradient(160deg,#333,#111); }
+  @media (max-width:700px){
+    .mosaic{ grid-template-columns:repeat(2,1fr); }
+    .m1,.m2,.m3,.m4,.m5,.m6{ grid-column:span 2; grid-row:span 2; }
+  }
 
   /* ---------- PROJECTS ---------- */
   .projects{ display:flex; flex-direction:column; gap:2px; margin-top:60px; }
   .project{
     background:var(--card);
     border:1px solid var(--line);
-    padding:36px 32px;
+    padding:32px;
     display:flex; justify-content:space-between; align-items:center;
     gap:24px;
     border-radius:20px;
@@ -130,10 +186,10 @@
     transition:background .3s ease, transform .3s ease;
   }
   .project:hover{ background:var(--ink); color:#fff; transform:translateX(6px); }
+  .project:hover .pdesc{ color:#bbb; }
   .project:hover .ptag{ color:#c9beff; border-color:#3a3a3a; }
   .project .pname{ font-size:clamp(20px,2.6vw,30px); font-weight:700; letter-spacing:-0.01em; }
   .project .pdesc{ font-size:13px; color:var(--dim); margin-top:6px; max-width:40ch; }
-  .project:hover .pdesc{ color:#bbb; }
   .ptag{
     font-family:'JetBrains Mono', monospace;
     font-size:11px;
@@ -159,10 +215,13 @@
     border-radius:28px;
     text-align:center;
     padding:100px 6vw;
+    position:relative;
+    overflow:hidden;
   }
   .connect h2{
     font-size:clamp(30px,5vw,60px);
     font-weight:800; letter-spacing:-0.02em;
+    position:relative; z-index:2;
   }
   .connect .btn{
     display:inline-block; margin-top:36px;
@@ -172,6 +231,7 @@
     border-radius:100px;
     font-size:14px; text-transform:uppercase; letter-spacing:0.08em;
     transition:background .3s ease;
+    position:relative; z-index:2;
   }
   .connect .btn:hover{ background:var(--violet-dark); }
 
@@ -199,9 +259,12 @@
   <p class="sub">I build products end-to-end — from a blank idea to a live website — for restaurants, cafes, and my own experiments. Currently obsessed with school-bus tracking and building my own AI assistant.</p>
   <div class="loc">Patna · GMT +5:30</div>
 
-  <div class="float-tag ft1">🚌 shipped a SaaS prototype</div>
-  <div class="float-tag ft2">🤖 building my own AI assistant</div>
-  <div class="float-tag ft3">☕ runs on chai + deadlines</div>
+  <div class="polaroid p1"><div class="art"></div><div class="cap">3am builds</div></div>
+  <div class="polaroid p2"><div class="art"></div><div class="cap">chai o'clock</div></div>
+  <div class="polaroid p3"><div class="art"></div><div class="cap">shipped it 🚀</div></div>
+  <div class="polaroid p4"><div class="art"></div><div class="cap">v2 already</div></div>
+  <div class="sticker s1">🚌 SchoolBus is live</div>
+  <div class="sticker s2">🤖 building an AI assistant</div>
 </section>
 
 <section id="about">
@@ -209,13 +272,13 @@
     <div class="section-label">A few things about me</div>
     <div class="section-title">Not just code — context.</div>
   </div>
-  <div class="facts reveal">
-    <div class="fact"><div class="emoji">🌙</div><div class="txt">Codes best late at night</div></div>
-    <div class="fact"><div class="emoji">🍽️</div><div class="txt">Started with restaurant websites</div></div>
-    <div class="fact"><div class="emoji">🧪</div><div class="txt">Always running 3 projects at once</div></div>
-    <div class="fact"><div class="emoji">🚌</div><div class="txt">Built a school bus tracking app</div></div>
-    <div class="fact"><div class="emoji">🤝</div><div class="txt">Learned by shipping for real clients</div></div>
-    <div class="fact"><div class="emoji">📍</div><div class="txt">Based in Patna, Bihar</div></div>
+  <div class="mosaic reveal">
+    <div class="mtile m1"><div class="txt">Runs entirely on chai and deadlines ☕</div></div>
+    <div class="mtile m2"><div class="txt">Started with restaurant websites 🍽️</div></div>
+    <div class="mtile m3"><div class="txt">Always 3 projects deep at once 🧪</div></div>
+    <div class="mtile m4"><div class="txt">Built a school bus tracking SaaS 🚌</div></div>
+    <div class="mtile m5"><div class="txt">Learning by shipping for real clients 🤝</div></div>
+    <div class="mtile m6"><div class="txt">Based in Patna 📍</div></div>
   </div>
 </section>
 
