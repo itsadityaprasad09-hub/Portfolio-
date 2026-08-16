@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aditya — Developer & Creator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root{
+    --bg:#f4f1ea;
+    --ink:#0f0f10;
+    --dim:#6b6b6b;
+    --violet:#7c5cff;
+    --violet-dark:#4b2fd6;
+    --card:#ffffff;
+    --line:#e4dfd2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    overflow-x:hidden;
+  }
+  a{color:inherit; text-decoration:none;}
+
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:20px 6vw;
+    mix-blend-mode:difference;
+    color:#fff;
+  }
+  nav .logo{ font-weight:800; font-size:16px; letter-spacing:-0.02em; }
+  nav .links{ display:flex; gap:28px; font-size:13px; text-transform:uppercase; letter-spacing:0.08em; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:0 6vw;
+    position:relative;
+  }
+  .hero .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px; color:var(--violet-dark);
+    letter-spacing:0.1em; text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(38px,7.5vw,96px);
+    font-weight:800;
+    line-height:1.02;
+    letter-spacing:-0.03em;
+    max-width:14ch;
+  }
+  .hero .sub{
+    margin-top:26px;
+    font-size:clamp(15px,1.6vw,19px);
+    color:var(--dim);
+    max-width:44ch;
+    line-height:1.6;
+  }
+  .hero .loc{
+    margin-top:40px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; color:var(--dim); text-transform:uppercase; letter-spacing:0.08em;
+  }
+  .float-tag{
+    position:absolute;
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:10px 16px;
+    border-radius:100px;
+    font-size:12px;
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+    opacity:0;
+    transform:translateY(20px) rotate(var(--r,0deg));
+    animation:floatIn 0.8s ease forwards;
+  }
+  @keyframes floatIn{ to{ opacity:1; transform:translateY(0) rotate(var(--r,0deg)); } }
+  .ft1{ top:14%; right:8vw; --r:-6deg; animation-delay:.3s; }
+  .ft2{ top:60%; right:4vw; --r:4deg; animation-delay:.6s; }
+  .ft3{ top:78%; left:8vw; --r:-3deg; animation-delay:.9s; }
+
+  /* ---------- REVEAL ON SCROLL ---------- */
+  .reveal{ opacity:0; transform:translateY(40px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  section{ padding:120px 6vw; }
+  .section-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; color:var(--violet-dark); text-transform:uppercase; letter-spacing:0.1em;
+    margin-bottom:16px;
+  }
+  .section-title{
+    font-size:clamp(28px,4vw,48px);
+    font-weight:700; letter-spacing:-0.02em;
+    max-width:16ch;
+  }
+
+  /* ---------- FACT TILES ---------- */
+  .facts{ display:flex; flex-wrap:wrap; gap:16px; margin-top:50px; }
+  .fact{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:22px 20px;
+    width:150px; height:150px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    box-shadow:0 6px 20px rgba(0,0,0,.04);
+    transition:transform .3s ease;
+  }
+  .fact:hover{ transform:translateY(-6px) rotate(-2deg); }
+  .fact .emoji{ font-size:28px; }
+  .fact .txt{ font-size:12.5px; color:var(--dim); line-height:1.4; }
+
+  /* ---------- PROJECTS ---------- */
+  .projects{ display:flex; flex-direction:column; gap:2px; margin-top:60px; }
+  .project{
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:36px 32px;
+    display:flex; justify-content:space-between; align-items:center;
+    gap:24px;
+    border-radius:20px;
+    margin-bottom:18px;
+    transition:background .3s ease, transform .3s ease;
+  }
+  .project:hover{ background:var(--ink); color:#fff; transform:translateX(6px); }
+  .project:hover .ptag{ color:#c9beff; border-color:#3a3a3a; }
+  .project .pname{ font-size:clamp(20px,2.6vw,30px); font-weight:700; letter-spacing:-0.01em; }
+  .project .pdesc{ font-size:13px; color:var(--dim); margin-top:6px; max-width:40ch; }
+  .project:hover .pdesc{ color:#bbb; }
+  .ptag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    border:1px solid var(--line);
+    padding:6px 12px; border-radius:100px;
+    white-space:nowrap;
+  }
+
+  /* ---------- BELIEFS ---------- */
+  .beliefs{ display:flex; flex-direction:column; gap:8px; margin-top:50px; }
+  .belief{
+    font-size:clamp(22px,3.2vw,38px);
+    font-weight:700;
+    padding:20px 0;
+    border-bottom:1px solid var(--line);
+    letter-spacing:-0.02em;
+  }
+  .belief span{ color:var(--violet-dark); }
+
+  /* ---------- CONNECT ---------- */
+  .connect{
+    background:var(--ink); color:#fff;
+    border-radius:28px;
+    text-align:center;
+    padding:100px 6vw;
+  }
+  .connect h2{
+    font-size:clamp(30px,5vw,60px);
+    font-weight:800; letter-spacing:-0.02em;
+  }
+  .connect .btn{
+    display:inline-block; margin-top:36px;
+    background:var(--violet);
+    color:#fff;
+    padding:16px 36px;
+    border-radius:100px;
+    font-size:14px; text-transform:uppercase; letter-spacing:0.08em;
+    transition:background .3s ease;
+  }
+  .connect .btn:hover{ background:var(--violet-dark); }
+
+  footer{
+    text-align:center;
+    padding:40px 6vw;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; color:var(--dim);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">ADITYA</div>
+  <div class="links">
+    <a href="#work">Work</a>
+    <a href="#connect">Connect</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="eyebrow">Web Developer & Designer · Patna, India</div>
+  <h1>I turn 2 AM ideas into things people use.</h1>
+  <p class="sub">I build products end-to-end — from a blank idea to a live website — for restaurants, cafes, and my own experiments. Currently obsessed with school-bus tracking and building my own AI assistant.</p>
+  <div class="loc">Patna · GMT +5:30</div>
+
+  <div class="float-tag ft1">🚌 shipped a SaaS prototype</div>
+  <div class="float-tag ft2">🤖 building my own AI assistant</div>
+  <div class="float-tag ft3">☕ runs on chai + deadlines</div>
+</section>
+
+<section id="about">
+  <div class="reveal">
+    <div class="section-label">A few things about me</div>
+    <div class="section-title">Not just code — context.</div>
+  </div>
+  <div class="facts reveal">
+    <div class="fact"><div class="emoji">🌙</div><div class="txt">Codes best late at night</div></div>
+    <div class="fact"><div class="emoji">🍽️</div><div class="txt">Started with restaurant websites</div></div>
+    <div class="fact"><div class="emoji">🧪</div><div class="txt">Always running 3 projects at once</div></div>
+    <div class="fact"><div class="emoji">🚌</div><div class="txt">Built a school bus tracking app</div></div>
+    <div class="fact"><div class="emoji">🤝</div><div class="txt">Learned by shipping for real clients</div></div>
+    <div class="fact"><div class="emoji">📍</div><div class="txt">Based in Patna, Bihar</div></div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="reveal">
+    <div class="section-label">Selected work</div>
+    <div class="section-title">Things I've actually shipped.</div>
+  </div>
+  <div class="projects reveal">
+    <a class="project" href="https://itsadityaprasad09-hub.github.io/School-buss-trackers-/" target="_blank">
+      <div>
+        <div class="pname">SchoolBus</div>
+        <div class="pdesc">Multi-tenant school bus tracking SaaS — live GPS, missed-call alerts, three role-based dashboards.</div>
+      </div>
+      <div class="ptag">SaaS · Live</div>
+    </a>
+    <a class="project" href="https://friday-one-lovat.vercel.app/" target="_blank">
+      <div>
+        <div class="pname">Friday</div>
+        <div class="pdesc">A personal AI assistant, powered by Gemini — my long-term project toward a real computer-use agent.</div>
+      </div>
+      <div class="ptag">AI · In progress</div>
+    </a>
+    <div class="project">
+      <div>
+        <div class="pname">Town Hall 29</div>
+        <div class="pdesc">Full brand + website for a multicuisine restaurant in Kankarbagh, Patna.</div>
+      </div>
+      <div class="ptag">Client · Restaurant</div>
+    </div>
+    <div class="project">
+      <div>
+        <div class="pname">Dine & Disc</div>
+        <div class="pdesc">Premium hookah lounge & dance floor — landing page, menu design, brand system.</div>
+      </div>
+      <div class="ptag">Client · Lounge</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="reveal">
+    <div class="section-label">What I believe</div>
+  </div>
+  <div class="beliefs reveal">
+    <div class="belief">Ship it, <span>then</span> perfect it.</div>
+    <div class="belief">Real clients <span>teach faster</span> than tutorials.</div>
+    <div class="belief">Every idea deserves <span>a working version</span>.</div>
+  </div>
+</section>
+
+<section id="connect">
+  <div class="connect reveal">
+    <h2>Got an idea?<br>Let's build it.</h2>
+    <a class="btn" href="https://github.com/itsadityaprasad09-hub" target="_blank">See my GitHub →</a>
+  </div>
+</section>
+
+<footer>© Aditya — built with code, not a template.</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+
+</body>
+</html>
