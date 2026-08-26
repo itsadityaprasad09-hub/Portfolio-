@@ -3,459 +3,168 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aditya — Field Notes</title>
-<meta name="description" content="A sketchbook of things built at 2 AM — freelance web developer & designer, Patna, India.">
+<title>Dispatch — Aditya</title>
+<meta name="description" content="Write a prompt, set a time, and it reaches Claude on its own.">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Caveat:wght@600;700&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Caveat:wght@600;700&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
   :root{
-    --paper:#f2e9d6;
-    --paper-dark:#e6d9bc;
-    --bg:#15130f;
-    --ink:#241f18;
-    --rust:#c1440e;
-    --olive:#5c6b45;
-    --dim:#a89f8f;
-    --line:#cdbd93;
-    --glass-ring:#3a3630;
+    --paper:#f2e9d6; --bg:#15130f; --ink:#241f18; --rust:#c1440e; --olive:#5c6b45; --dim:#a89f8f; --line:#3a3630;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--bg);
-    color:var(--paper);
-    font-family:'Space Grotesk', sans-serif;
-    overflow-x:hidden;
-    -webkit-tap-highlight-color:transparent;
+  body{ background:var(--bg); color:var(--paper); font-family:'Space Grotesk',sans-serif; min-height:100vh; }
+  a{ color:var(--rust); }
+  .wrap{ max-width:720px; margin:0 auto; padding:48px 6vw 80px; }
+  .kicker{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:var(--dim); }
+  h1{ font-family:'Fraunces',serif; font-weight:600; font-size:clamp(34px,7vw,54px); margin-top:10px; line-height:1.05; }
+  h1 .script{ font-family:'Caveat',cursive; color:var(--rust); }
+  .lede{ font-family:'Caveat',cursive; font-size:20px; color:#cfc4a8; margin-top:8px; }
+  p.note{ font-size:13.5px; color:var(--dim); margin-top:16px; line-height:1.6; max-width:56ch; }
+
+  form{ margin-top:36px; background:var(--paper); color:var(--ink); border-radius:6px; padding:26px; box-shadow:0 20px 40px -20px rgba(0,0,0,.6); }
+  label{ display:block; font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#6b6252; margin:16px 0 6px; }
+  label:first-child{ margin-top:0; }
+  textarea, input, select{
+    width:100%; border:1px solid #d8cbae; background:#fbf6ea; border-radius:4px; padding:10px 12px;
+    font-family:'Space Grotesk',sans-serif; font-size:14px; color:var(--ink);
   }
-  a{color:inherit;}
-  ::selection{background:var(--rust); color:var(--paper);}
-
-  .grain{
-    position:fixed; inset:0; pointer-events:none; z-index:1; opacity:.05; mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  textarea{ min-height:100px; resize:vertical; }
+  .row{ display:flex; gap:14px; }
+  .row > div{ flex:1; }
+  .check{ display:flex; align-items:center; gap:8px; margin-top:16px; font-size:13px; color:#4a4436; }
+  .check input{ width:auto; }
+  button.submit{
+    margin-top:22px; width:100%; background:var(--rust); color:var(--paper); border:none; padding:13px;
+    border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.04em; cursor:pointer;
   }
+  button.submit:hover{ background:#a3390b; }
 
-  nav{
-    position:sticky; top:0; z-index:60; display:flex; justify-content:center; gap:34px;
-    padding:22px 0 16px; font-size:12.5px; text-transform:lowercase; letter-spacing:.05em; color:var(--dim);
-    background:linear-gradient(var(--bg) 65%, transparent);
-  }
-  nav a{ text-decoration:none; }
-  nav a:hover{ color:var(--paper); }
+  .section-title{ font-family:'Fraunces',serif; font-size:22px; font-weight:600; margin:46px 0 14px; }
+  .list{ list-style:none; }
+  .list li{ border-bottom:1px solid var(--line); padding:14px 0; }
+  .list .top{ display:flex; justify-content:space-between; gap:12px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--dim); }
+  .list .prompt{ margin-top:6px; font-size:14px; color:var(--paper); white-space:pre-wrap; }
+  .list .output{ margin-top:8px; font-size:13px; color:#cfc4a8; white-space:pre-wrap; border-left:2px solid var(--olive); padding-left:10px; }
+  .status{ font-family:'JetBrains Mono',monospace; font-size:10.5px; padding:2px 8px; border-radius:20px; border:1px solid; }
+  .status.pending{ color:#e0b25a; border-color:#e0b25a; }
+  .status.done{ color:var(--olive); border-color:var(--olive); }
+  .status.ok{ color:var(--olive); border-color:var(--olive); }
+  .status.err{ color:var(--rust); border-color:var(--rust); }
+  .empty{ font-size:13px; color:var(--dim); font-style:italic; }
+  .del{ background:none; border:none; color:var(--dim); cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:11px; text-decoration:underline; }
 
-  .wrap{ max-width:900px; margin:0 auto; padding:0 6vw; position:relative; z-index:2; }
-
-  /* ---------- COVER ---------- */
-  .cover{ padding:8px 6vw 40px; text-align:center; position:relative; }
-  .botanical{ position:absolute; width:120px; opacity:.55; }
-  .botanical.tl{ top:-6px; left:2vw; transform:rotate(-8deg); }
-  .botanical.tr{ top:-6px; right:2vw; transform:scaleX(-1) rotate(-8deg); }
-  @media (max-width:640px){ .botanical{ width:70px; } }
-
-  .kicker{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:var(--dim); margin-bottom:14px; }
-  h1.title{ font-family:'Fraunces',serif; font-weight:600; font-size:clamp(42px,9vw,84px); line-height:.95; }
-  .title .script{ font-family:'Caveat',cursive; font-weight:700; color:var(--rust); font-size:1.05em; display:inline-block; transform:rotate(-3deg); }
-  .subline{ font-family:'Caveat',cursive; font-size:22px; color:var(--paper-dark); margin-top:10px; }
-  .role{ margin-top:18px; font-size:13.5px; color:var(--dim); letter-spacing:.02em; }
-  .hint{ margin-top:26px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--dim); letter-spacing:.04em; }
-  .hint .pct{ color:var(--rust); font-weight:500; }
-
-  /* ---------- DECK ---------- */
-  .deck-section{ padding:30px 4vw 10px; }
-  .deck{
-    position:relative; max-width:640px; margin:0 auto; height:560px;
-    perspective:1600px;
-  }
-  .plate{
-    position:absolute; inset:0; margin:auto; width:100%; height:100%;
-    background:var(--paper);
-    background-image:
-      linear-gradient(rgba(150,130,80,.14) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(150,130,80,.14) 1px, transparent 1px);
-    background-size:26px 26px;
-    border-radius:4px;
-    box-shadow:0 30px 60px -20px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.15);
-    color:var(--ink);
-    padding:34px 30px 26px;
-    display:flex; flex-direction:column;
-    transform-origin:left center;
-    transition:transform .55s cubic-bezier(.22,.68,0,1), opacity .5s ease;
-    cursor:grab;
-    touch-action:pan-y;
-    overflow:hidden;
-  }
-  .plate:active{ cursor:grabbing; }
-  .plate.dragging{ transition:none; }
-
-  .plate .num{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--olive); letter-spacing:.15em; text-transform:uppercase; }
-  .plate h3{ font-family:'Fraunces',serif; font-weight:600; font-size:clamp(24px,4vw,32px); margin-top:6px; }
-  .plate .tag{ font-family:'Caveat',cursive; font-size:19px; color:var(--rust); margin-top:2px; }
-  .plate p.desc{ margin-top:16px; font-size:14.5px; line-height:1.6; color:#3a352b; max-width:46ch; }
-  .plate .meta{ margin-top:auto; display:flex; flex-wrap:wrap; gap:8px; }
-  .plate .chip{ font-family:'JetBrains Mono',monospace; font-size:10.5px; border:1px solid var(--olive); color:var(--olive); padding:4px 8px; border-radius:20px; letter-spacing:.03em; }
-  .plate .link{ margin-top:14px; font-size:12.5px; text-decoration:underline; text-underline-offset:3px; color:var(--rust); align-self:flex-start; }
-
-  .plate .curl{
-    position:absolute; right:0; bottom:0; width:46px; height:46px;
-    background:linear-gradient(135deg, transparent 50%, var(--paper-dark) 50%);
-    box-shadow:-2px -2px 6px rgba(0,0,0,.15) inset;
-  }
-
-  .deck-nav{ display:flex; align-items:center; justify-content:center; gap:22px; margin-top:22px; }
-  .deck-nav button{
-    background:none; border:1px solid var(--line); color:var(--paper); width:38px; height:38px; border-radius:50%;
-    font-size:16px; cursor:pointer; transition:.2s;
-  }
-  .deck-nav button:hover{ background:var(--rust); border-color:var(--rust); }
-  .deck-dots{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim); letter-spacing:.1em; }
-
-  /* ---------- MAGNIFIER ---------- */
-  .lens-zone{ position:relative; max-width:640px; margin:46px auto 0; }
-  .lens-hint{ text-align:center; font-family:'Caveat',cursive; font-size:18px; color:var(--dim); margin-bottom:10px; }
-  .lens-board{
-    position:relative; border-radius:4px; overflow:hidden; height:260px;
-    background:var(--paper);
-    background-image:
-      linear-gradient(rgba(150,130,80,.14) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(150,130,80,.14) 1px, transparent 1px);
-    background-size:26px 26px;
-    box-shadow:0 20px 40px -18px rgba(0,0,0,.55);
-    touch-action:none;
-  }
-  .lens-board .field-note{ position:absolute; color:var(--ink); font-family:'JetBrains Mono',monospace; }
-  .lens-board .fn1{ top:14%; left:8%; font-size:11px; color:#7a7264; }
-  .lens-board .fn2{ top:40%; left:20%; font-size:20px; font-family:'Fraunces',serif; color:var(--ink); font-weight:600; }
-  .lens-board .fn3{ top:58%; left:20%; font-size:11px; color:#7a7264; max-width:280px; line-height:1.5; }
-  .lens-board .fn4{ top:78%; left:8%; font-size:10.5px; color:var(--olive); }
-
-  .lens{
-    position:absolute; width:150px; height:150px; border-radius:50%;
-    border:6px solid var(--glass-ring);
-    box-shadow:0 0 0 2px rgba(255,255,255,.15) inset, 0 12px 24px rgba(0,0,0,.5);
-    pointer-events:none;
-    background-repeat:no-repeat;
-    display:none;
-  }
-  .lens::after{
-    content:''; position:absolute; inset:0; border-radius:50%;
-    box-shadow:inset 0 0 30px rgba(0,0,0,.25);
-  }
-  .lens-handle{
-    position:absolute; width:10px; height:70px; background:var(--glass-ring); border-radius:6px;
-    left:50%; top:100%; transform-origin:top center; transform:translateX(-50%) rotate(35deg);
-    display:none;
-  }
-
-  .zoom-controls{ display:flex; justify-content:center; gap:10px; margin-top:16px; }
-  .zoom-controls button{
-    font-family:'JetBrains Mono',monospace; font-size:13px; background:none; border:1px solid var(--line);
-    color:var(--paper); width:34px; height:34px; border-radius:50%; cursor:pointer; transition:.2s;
-  }
-  .zoom-controls button:hover{ background:var(--olive); border-color:var(--olive); }
-  .zoom-level{ align-self:center; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim); width:44px; text-align:center; }
-
-  /* ---------- ABOUT ---------- */
-  .about{ padding:100px 6vw 60px; display:grid; grid-template-columns:1fr 1.4fr; gap:50px; align-items:start; }
-  @media (max-width:760px){ .about{ grid-template-columns:1fr; } }
-  .about h2{ font-family:'Fraunces',serif; font-size:34px; font-weight:600; }
-  .about .script2{ font-family:'Caveat',cursive; color:var(--rust); font-size:22px; }
-  .about p{ font-size:15px; line-height:1.75; color:var(--paper-dark); margin-top:14px; }
-  .about .stamp{
-    margin-top:22px; display:inline-block; border:1px dashed var(--olive); color:var(--olive);
-    font-family:'JetBrains Mono',monospace; font-size:10.5px; padding:6px 10px; border-radius:4px; transform:rotate(-2deg);
-  }
-
-  /* ---------- INDEX (editorial contents) ---------- */
-  .index-section{ padding:20px 6vw 60px; }
-  .index-section h2{ font-family:'Fraunces',serif; font-size:26px; font-weight:600; margin-bottom:22px; }
-  .index-list{ list-style:none; border-top:1px solid var(--line); }
-  .index-list li{
-    display:flex; align-items:baseline; gap:14px; padding:14px 0; border-bottom:1px solid var(--line);
-    cursor:pointer; transition:.2s;
-  }
-  .index-list li:hover{ background:rgba(193,68,14,.06); }
-  .index-list .no{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--olive); width:22px; flex-shrink:0; }
-  .index-list .name{ font-family:'Fraunces',serif; font-size:17px; flex:1; }
-  .index-list .brief{ font-size:12.5px; color:var(--dim); }
-
-  /* ---------- CONTACT ---------- */
-  footer{ padding:60px 6vw 44px; text-align:center; border-top:1px solid var(--glass-ring); }
-  footer h2{ font-family:'Fraunces',serif; font-size:30px; font-weight:600; }
-  footer .script3{ font-family:'Caveat',cursive; color:var(--rust); font-size:20px; margin-top:6px; }
-  footer .links{ margin-top:20px; display:flex; justify-content:center; gap:26px; font-size:13.5px; }
-  footer .links a{ text-decoration:underline; text-underline-offset:4px; color:var(--paper-dark); }
-  footer .meta-line{ margin-top:34px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--dim); letter-spacing:.1em; }
+  .setup{ margin-top:60px; border-top:1px solid var(--line); padding-top:24px; }
+  .setup h2{ font-family:'Fraunces',serif; font-size:18px; margin-bottom:10px; }
+  .setup ol{ padding-left:18px; font-size:13px; color:var(--dim); line-height:1.9; }
+  .setup code{ background:#221f19; padding:1px 6px; border-radius:3px; font-family:'JetBrains Mono',monospace; font-size:12px; color:#e8dcc0; }
 </style>
 </head>
 <body>
-
-<div class="grain"></div>
-
-<nav>
-  <a href="#plates">plates</a>
-  <a href="#about">about</a>
-  <a href="#index">index</a>
-  <a href="#contact">contact</a>
-</nav>
-
-<section class="cover">
-  <svg class="botanical tl" viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M60 150 C 55 100, 65 70, 55 20" stroke="#5c6b45" stroke-width="2"/>
-    <path d="M55 60 C 40 55, 30 40, 28 20" stroke="#5c6b45" stroke-width="1.6"/>
-    <path d="M58 90 C 75 85, 88 70, 92 50" stroke="#5c6b45" stroke-width="1.6"/>
-    <circle cx="55" cy="20" r="4" fill="#c1440e"/>
-  </svg>
-  <svg class="botanical tr" viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M60 150 C 55 100, 65 70, 55 20" stroke="#5c6b45" stroke-width="2"/>
-    <path d="M55 60 C 40 55, 30 40, 28 20" stroke="#5c6b45" stroke-width="1.6"/>
-    <path d="M58 90 C 75 85, 88 70, 92 50" stroke="#5c6b45" stroke-width="1.6"/>
-    <circle cx="55" cy="20" r="4" fill="#c1440e"/>
-  </svg>
-
+<div class="wrap">
   <div class="kicker">Field Notes / Patna, India</div>
-  <h1 class="title">Aditya<br><span class="script">a sketchbook</span></h1>
-  <div class="subline">of things I built after midnight</div>
-  <div class="role">Freelance web developer &amp; designer — I turn 2 AM ideas into things people use.</div>
-  <div class="hint"><span class="pct">Drag</span> a plate to turn it · <span class="pct">drag the glass</span> across the board below</div>
-</section>
+  <h1>Dispatch <span class="script">to Claude</span></h1>
+  <div class="lede">write it once, it fires itself</div>
+  <p class="note">Write a prompt, pick a time. It reaches Claude through your own API key on schedule — whether or not your laptop is open, and whether or not claude.ai still has quota left today.</p>
 
-<section class="deck-section" id="plates">
-  <div class="deck" id="deck"></div>
-  <div class="deck-nav">
-    <button id="prevPlate" aria-label="Previous plate">←</button>
-    <span class="deck-dots" id="deckDots">01 / 06</span>
-    <button id="nextPlate" aria-label="Next plate">→</button>
-  </div>
-</section>
+  <form id="form">
+    <label>Prompt</label>
+    <textarea id="prompt" placeholder="e.g. Summarise today's client emails and draft replies…" required></textarea>
+    <div class="row">
+      <div>
+        <label>Run at</label>
+        <input type="datetime-local" id="runAt" required>
+      </div>
+      <div>
+        <label>Model</label>
+        <select id="model">
+          <option value="claude-sonnet-4-6">Sonnet</option>
+          <option value="claude-opus-4-6">Opus</option>
+          <option value="claude-haiku-4-6">Haiku</option>
+        </select>
+      </div>
+    </div>
+    <div class="check">
+      <input type="checkbox" id="repeatDaily">
+      <label style="margin:0; text-transform:none; font-family:inherit; letter-spacing:0;">repeat every day at this time</label>
+    </div>
+    <button class="submit" type="submit">Schedule it</button>
+  </form>
 
-<section class="lens-zone">
-  <div class="lens-hint">drag the glass to read the margin notes</div>
-  <div class="lens-board" id="lensBoard">
-    <div class="field-note fn1">workflow — 03:14 AM</div>
-    <div class="field-note fn2">ship, then refine</div>
-    <div class="field-note fn3">GitHub Pages via PAT-authenticated pushes, JSON-driven content, incremental check-ins before big redesigns. Reverted a full premium redesign once — now every large change gets shown before it's committed.</div>
-    <div class="field-note fn4">— margin note, Chubby Baker &amp; Co build log</div>
-    <div class="lens" id="lens"></div>
-    <div class="lens-handle" id="lensHandle"></div>
-  </div>
-  <div class="zoom-controls">
-    <button id="zoomOut" aria-label="Zoom out">−</button>
-    <span class="zoom-level" id="zoomLevel">2.2×</span>
-    <button id="zoomIn" aria-label="Zoom in">+</button>
-  </div>
-</section>
+  <div class="section-title">Queued</div>
+  <ul class="list" id="scheduleList"><li class="empty">Nothing queued yet.</li></ul>
 
-<section class="about" id="about">
-  <div>
-    <h2>About</h2>
-    <div class="script2">the person behind the ink</div>
-  </div>
-  <div>
-    <p>Aditya is a freelance web developer and designer based in Patna, building end-to-end products for restaurant and lounge clients alongside his own experimental projects — while studying alongside the freelance work. He favours shipping quickly and refining from what he sees on screen over long reviews of code.</p>
-    <p>Outside client work, he's drawn to Indian classical and ambient sound — <em>raagverse</em>, one of the plates above, is his attempt to build a listening room for it. Most of what's here started as a note at 2 AM and became something someone actually uses.</p>
-    <div class="stamp">Patna · IN · est. ongoing</div>
-  </div>
-</section>
+  <div class="section-title">Dispatches</div>
+  <ul class="list" id="resultsList"><li class="empty">Nothing has run yet.</li></ul>
 
-<section class="index-section" id="index">
-  <h2>Index</h2>
-  <ul class="index-list" id="indexList"></ul>
-</section>
-
-<footer id="contact">
-  <h2>Get in touch</h2>
-  <div class="script3">next page is blank — let's fill it</div>
-  <div class="links">
-    <a href="https://github.com/itsadityaprasad09-hub" target="_blank" rel="noopener">GitHub</a>
-    <a href="#plates">See the work</a>
+  <div class="setup">
+    <h2>One-time setup (do this once)</h2>
+    <ol>
+      <li>Import this repo into Vercel and deploy it.</li>
+      <li>In the Vercel project → Settings → Environment Variables, add: <code>ANTHROPIC_API_KEY</code> (from console.anthropic.com — separate from claude.ai and billed per token), <code>GITHUB_TOKEN</code> (a repo-scoped PAT for this repo), <code>GITHUB_REPO</code> (e.g. <code>itsadityaprasad09-hub/Portfolio-</code>), and <code>CRON_SECRET</code> (any random string you make up).</li>
+      <li>Go to cron-job.org (free), create a job that calls <code>https://your-project.vercel.app/api/run?key=YOUR_CRON_SECRET</code> every 5–10 minutes. This is what actually fires prompts on time — Vercel's own free cron only runs once a day.</li>
+      <li>Come back here, queue a prompt, and it'll show up under Dispatches once it fires.</li>
+    </ol>
   </div>
-  <div class="meta-line">Patna · Sketchbook · plate 06 of 06</div>
-</footer>
+</div>
 
 <script>
-  const plates = [
-    {
-      num: "Plate 01", title: "Chubby Baker & Co", tag: "custom cake bakery, Bandra West",
-      desc: "A JSON-driven menu and gallery with a password-protected admin panel that writes straight to GitHub, plus a Three.js cake that turns slowly under the hero.",
-      chips: ["JS", "GitHub Pages", "Three.js"], link: "https://github.com/itsadityaprasad09-hub/chubby-baker-co"
-    },
-    {
-      num: "Plate 02", title: "raagverse", tag: "a room for ambient & classical listening",
-      desc: "An atmospheric player wrapped in mist and glass — a YouTube-powered player card with an animated equalizer, built around the sound Aditya listens to at 2 AM.",
-      chips: ["JS", "YouTube API", "CSS"], link: "https://github.com/itsadityaprasad09-hub/raagverse"
-    },
-    {
-      num: "Plate 03", title: "Friday", tag: "a personal assistant, always on",
-      desc: "A password-locked AI assistant on Gemini 2.5 Flash with chat history and GitHub sign-in, deployed to Vercel for daily use.",
-      chips: ["Gemini", "Vercel", "OAuth"], link: "https://friday-one-lovat.vercel.app"
-    },
-    {
-      num: "Plate 04", title: "SchoolBus", tag: "tracking, for three kinds of people",
-      desc: "A multi-tenant prototype with Principal, Driver, and Parent dashboards, a per-bus subscription model, and a missed-call alert as the point of difference.",
-      chips: ["SaaS", "Prototype", "Multi-tenant"], link: "https://github.com/itsadityaprasad09-hub/School-buss-trackers-"
-    },
-    {
-      num: "Plate 05", title: "Duo", tag: "a room for exactly two people",
-      desc: "A private real-time chat for two, built on Firebase, with a single reusable invite link and no accounts to manage.",
-      chips: ["Firebase", "Realtime", "JS"], link: "https://github.com/itsadityaprasad09-hub/duo-private-chat"
-    },
-    {
-      num: "Plate 06", title: "This Sketchbook", tag: "the page you're standing on",
-      desc: "A portfolio built like a field notebook — plates you turn, a glass you drag across the margins, and an index at the back for anyone in a hurry.",
-      chips: ["HTML/CSS/JS", "GitHub Pages"], link: "https://github.com/itsadityaprasad09-hub/Portfolio-"
-    }
-  ];
+  const form = document.getElementById('form');
+  const scheduleList = document.getElementById('scheduleList');
+  const resultsList = document.getElementById('resultsList');
 
-  const deck = document.getElementById('deck');
-  const dots = document.getElementById('deckDots');
-  const indexList = document.getElementById('indexList');
-  let current = 0;
-
-  function renderPlate(p, i){
-    const el = document.createElement('div');
-    el.className = 'plate';
-    el.style.zIndex = 100 - i;
-    el.innerHTML = `
-      <div class="num">${p.num}</div>
-      <h3>${p.title}</h3>
-      <div class="tag">${p.tag}</div>
-      <p class="desc">${p.desc}</p>
-      <div class="meta">${p.chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
-      <a class="link" href="${p.link}" target="_blank" rel="noopener">view →</a>
-      <div class="curl"></div>
-    `;
-    return el;
-  }
-
-  plates.forEach((p,i)=> deck.appendChild(renderPlate(p,i)));
-  const plateEls = Array.from(deck.children);
-
-  function layout(){
-    plateEls.forEach((el, i)=>{
-      const offset = i - current;
-      if(offset < 0){
-        el.style.transform = `translateX(-120%) rotateY(-60deg)`;
-        el.style.opacity = '0';
-        el.style.pointerEvents = 'none';
-      } else if(offset === 0){
-        el.style.transform = `translateX(0) rotateY(0deg)`;
-        el.style.opacity = '1';
-        el.style.pointerEvents = 'auto';
-      } else {
-        el.style.transform = `translateX(${Math.min(offset*10,20)}px) translateY(${Math.min(offset*8,16)}px) scale(${1 - Math.min(offset*0.02,0.06)})`;
-        el.style.opacity = offset > 2 ? '0' : '1';
-        el.style.pointerEvents = 'none';
-      }
+  async function loadSchedules(){
+    const res = await fetch('/api/schedule');
+    const data = await res.json();
+    if(!data.length){ scheduleList.innerHTML = '<li class="empty">Nothing queued yet.</li>'; return; }
+    scheduleList.innerHTML = data.map(s => `
+      <li>
+        <div class="top">
+          <span>${new Date(s.runAt).toLocaleString()} ${s.repeatDaily ? '· daily' : ''}</span>
+          <span class="status ${s.status}">${s.status}</span>
+        </div>
+        <div class="prompt">${s.prompt}</div>
+        <button class="del" data-id="${s.id}">remove</button>
+      </li>
+    `).join('');
+    scheduleList.querySelectorAll('.del').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        await fetch('/api/schedule?id=' + btn.dataset.id, { method:'DELETE' });
+        loadSchedules();
+      });
     });
-    dots.textContent = String(current+1).padStart(2,'0') + ' / ' + String(plateEls.length).padStart(2,'0');
   }
-  layout();
 
-  function goTo(i){
-    current = Math.max(0, Math.min(plateEls.length-1, i));
-    layout();
+  async function loadResults(){
+    const res = await fetch('/api/results');
+    const data = await res.json();
+    if(!data.length){ resultsList.innerHTML = '<li class="empty">Nothing has run yet.</li>'; return; }
+    resultsList.innerHTML = data.map(r => `
+      <li>
+        <div class="top">
+          <span>${new Date(r.ranAt).toLocaleString()}</span>
+          <span class="status ${r.ok ? 'ok':'err'}">${r.ok ? 'sent':'error'}</span>
+        </div>
+        <div class="prompt">${r.prompt}</div>
+        <div class="output">${r.output}</div>
+      </li>
+    `).join('');
   }
-  document.getElementById('prevPlate').addEventListener('click', ()=> goTo(current-1));
-  document.getElementById('nextPlate').addEventListener('click', ()=> goTo(current+1));
 
-  // drag-to-turn on the active plate
-  let dragStartX = null;
-  function onDown(e){
-    const active = plateEls[current];
-    if(!active.contains(e.target) && e.target !== active) return;
-    dragStartX = (e.touches ? e.touches[0].clientX : e.clientX);
-    active.classList.add('dragging');
-  }
-  function onMove(e){
-    if(dragStartX === null) return;
-    const x = (e.touches ? e.touches[0].clientX : e.clientX);
-    const dx = x - dragStartX;
-    const active = plateEls[current];
-    const rot = Math.max(-40, Math.min(40, dx / 6));
-    active.style.transform = `translateX(${dx}px) rotateY(${-rot}deg)`;
-  }
-  function onUp(e){
-    if(dragStartX === null) return;
-    const x = (e.changedTouches ? e.changedTouches[0].clientX : e.clientX);
-    const dx = x - dragStartX;
-    const active = plateEls[current];
-    active.classList.remove('dragging');
-    if(dx < -70) goTo(current+1);
-    else if(dx > 70) goTo(current-1);
-    else layout();
-    dragStartX = null;
-  }
-  deck.addEventListener('mousedown', onDown);
-  window.addEventListener('mousemove', onMove);
-  window.addEventListener('mouseup', onUp);
-  deck.addEventListener('touchstart', onDown, {passive:true});
-  window.addEventListener('touchmove', onMove, {passive:true});
-  window.addEventListener('touchend', onUp);
-
-  // editorial index
-  plates.forEach((p,i)=>{
-    const li = document.createElement('li');
-    li.innerHTML = `<span class="no">${String(i+1).padStart(2,'0')}</span><span class="name">${p.title}</span><span class="brief">${p.tag}</span>`;
-    li.addEventListener('click', ()=>{
-      goTo(i);
-      document.getElementById('plates').scrollIntoView({behavior:'smooth', block:'center'});
-    });
-    indexList.appendChild(li);
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const body = {
+      prompt: document.getElementById('prompt').value,
+      runAt: new Date(document.getElementById('runAt').value).toISOString(),
+      model: document.getElementById('model').value,
+      repeatDaily: document.getElementById('repeatDaily').checked,
+    };
+    await fetch('/api/schedule', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    form.reset();
+    loadSchedules();
   });
 
-  // --- draggable magnifying glass ---
-  const board = document.getElementById('lensBoard');
-  const lens = document.getElementById('lens');
-  const handle = document.getElementById('lensHandle');
-  let zoom = 2.2;
-  const boardBg = getComputedStyle(board).backgroundImage;
-
-  function positionLens(x, y){
-    const rect = board.getBoundingClientRect();
-    const lx = Math.max(0, Math.min(rect.width, x));
-    const ly = Math.max(0, Math.min(rect.height, y));
-    lens.style.display = 'block';
-    handle.style.display = 'block';
-    lens.style.left = (lx - 75) + 'px';
-    lens.style.top = (ly - 75) + 'px';
-    handle.style.left = (lx - 5) + 'px';
-    handle.style.top = (ly + 60) + 'px';
-
-    // zoomed snapshot effect: render board content scaled behind the lens window
-    lens.style.backgroundImage = `var(--lens-content)`;
-  }
-
-  function updateLensContent(){
-    lens.style.setProperty('--lens-content', 'none');
-  }
-
-  let dragging = false;
-  function lensMove(e){
-    const rect = board.getBoundingClientRect();
-    const point = e.touches ? e.touches[0] : e;
-    const x = point.clientX - rect.left;
-    const y = point.clientY - rect.top;
-    positionLens(x, y);
-    lens.style.backgroundSize = (rect.width*zoom) + 'px ' + (rect.height*zoom) + 'px';
-    lens.style.backgroundPosition = `-${x*zoom-75}px -${y*zoom-75}px`;
-    lens.style.backgroundImage = 'linear-gradient(rgba(150,130,80,.14) 1px, transparent 1px), linear-gradient(90deg, rgba(150,130,80,.14) 1px, transparent 1px), radial-gradient(circle, var(--paper), var(--paper))';
-    lens.style.backgroundColor = 'var(--paper)';
-  }
-  board.addEventListener('mousemove', (e)=>{ dragging = true; lensMove(e); });
-  board.addEventListener('mouseleave', ()=>{ lens.style.display='none'; handle.style.display='none'; });
-  board.addEventListener('touchstart', lensMove, {passive:true});
-  board.addEventListener('touchmove', lensMove, {passive:true});
-
-  document.getElementById('zoomIn').addEventListener('click', ()=>{
-    zoom = Math.min(4, zoom + 0.3);
-    document.getElementById('zoomLevel').textContent = zoom.toFixed(1) + '×';
-  });
-  document.getElementById('zoomOut').addEventListener('click', ()=>{
-    zoom = Math.max(1.2, zoom - 0.3);
-    document.getElementById('zoomLevel').textContent = zoom.toFixed(1) + '×';
-  });
+  loadSchedules();
+  loadResults();
+  setInterval(()=>{ loadSchedules(); loadResults(); }, 15000);
 </script>
-
 </body>
 </html>
